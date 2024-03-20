@@ -18,12 +18,16 @@ import { SignupValidation } from "@/lib/validation";
 import { z } from "zod";
 import Loader from "@/components/ui/shared/Loader";
 import { createUserAccount } from "@/lib/appwrite/api";
+import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutations";
 
 const SignUpForm = () => {
   //variable to determine whether to show the loding icon
   const { toast } = useToast();
-  const isLoading = false;
 
+
+  const { mutateAsync: createUserAccount, isLoading: isCreatingUser } = useCreateUserAccount()
+
+  const {mutateAsync: signInAccount, isloading: isSigningIn} = useSignInAccount();
   // 1. Define your form.
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
@@ -44,8 +48,19 @@ const SignUpForm = () => {
       return toast({title: 'Sign up failed. Please try again.'})
     }
 
-    // const session = await signInAccount()
+    const session = await signInAccount({
+      email: values.email,
+      password: values.password,
+    })
+
+    if(!session){
+      return toast({title: 'Sign in Failed. Please try again.'})
+    }
+
+    
+
   }
+
   return (
     <Form {...form}>
       <div className="sm:w-420 flex-center flex-col">
@@ -114,7 +129,7 @@ const SignUpForm = () => {
             )}
           />
           <Button type="submit" className="shad-button_primary">
-            {isLoading ? (
+            {isCreatingUser ? (
               <div className="flex-center gap-2">
                 <Loader />
                 Loading...
@@ -134,3 +149,7 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
+function toast(arg0: { title: string; }) {
+  throw new Error("Function not implemented.");
+}
+
