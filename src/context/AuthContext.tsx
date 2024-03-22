@@ -51,8 +51,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user,
     setUser,
     isLoading,
-    IsAuthenticated,
-    SetIsAuthenticated,
+    isAuthenticated,
+    setIsAuthenticated,
     checkAuthUser,
   };
 
