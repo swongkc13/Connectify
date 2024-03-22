@@ -19,7 +19,7 @@ const INITIAL_STATE = {
   checkAuthUser: async () => false as boolean,
 };
 
-//Imported from Github
+//Imported from Github original project file
 type IContextType = {
   user: IUser;
   isLoading: boolean;
