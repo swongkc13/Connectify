@@ -52,6 +52,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           bio: currentAccount.bio
         })
 
+        //Last stopped at this line
+
         setIsAuthenticated(true)
 
         return true;
