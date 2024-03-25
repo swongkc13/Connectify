@@ -1,3 +1,4 @@
+import { getCurrentUser } from "@/lib/appwrite/api";
 import { IUser } from "@/types";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -39,6 +40,22 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const checkAuthUser = async () => {
     try {
       const currentAccount = await getCurrentUser();
+
+      if(currentAccount){
+  
+        setUser({
+          id: currentAccount.$id,
+          name: currentAccount.name,
+          username: currentAccount.username,
+          email: currentAccount.email,
+          imageUrl: currentAccount.imageUrl,
+          bio: currentAccount.bio
+        })
+
+        setIsAuthenticated(true)
+
+        return true;
+      }
     } catch (error) {
       console.log(error);
       return false;
