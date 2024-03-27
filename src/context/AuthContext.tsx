@@ -21,7 +21,6 @@ const INITIAL_STATE = {
   checkAuthUser: async () => false as boolean,
 };
 
-//Imported from Github original project file
 type IContextType = {
   user: IUser;
   isLoading: boolean;
@@ -36,31 +35,41 @@ const AuthContext = createContext<IContextType>(INITIAL_STATE);
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser>(INITIAL_USER);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(true);
+    }
+    setIsLoading(false);
+  }, []);
 
   const checkAuthUser = async () => {
     try {
       const currentAccount = await getCurrentUser();
 
       if(currentAccount){
-  
-        setUser({
+        const userData = {
           id: currentAccount.$id,
           name: currentAccount.name,
           username: currentAccount.username,
           email: currentAccount.email,
           imageUrl: currentAccount.imageUrl,
           bio: currentAccount.bio
-        })
+        };
 
+        setUser(userData);
+        setIsAuthenticated(true);
 
-        setIsAuthenticated(true)
+        localStorage.setItem('user', JSON.stringify(userData));
 
         return true;
       }
-      return false
+      return false;
     } catch (error) {
       console.log(error);
       return false;
@@ -69,14 +78,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  useEffect(() => {
-    if(
-      localStorage.getItem('cookieFallback') === '[]' ||
-      localStorage.getItem('cookieFallback') === null
-    ) navigate('/sign-in')
-
-    checkAuthUser();
-  }, []);
+  const logout = () => {
+    localStorage.removeItem('user');
+    setUser(INITIAL_USER);
+    setIsAuthenticated(false);
+    navigate('/sign-in');
+  };
 
   const value = {
     user,
@@ -85,12 +92,12 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isAuthenticated,
     setIsAuthenticated,
     checkAuthUser,
+    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// Last stopped at this line
 export default AuthProvider;
 
-export const useUserContext = () => useContext(AuthContext)
+export const useUserContext = () => useContext(AuthContext);
