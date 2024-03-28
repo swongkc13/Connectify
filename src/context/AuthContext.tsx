@@ -40,19 +40,20 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
+    const cookieFallback = localStorage.getItem('cookieFallback');
+    // || cookieFallback === null
+    if (cookieFallback === '[]') {
+      navigate('/sign-in');
+    } else {
+      checkAuthUser(); // Call checkAuthUser if cookieFallback is not empty or null
     }
-    setIsLoading(false);
   }, []);
 
-  const checkAuthUser = async () => {
+  const checkAuthUser = async (): Promise<boolean> => {
     try {
       const currentAccount = await getCurrentUser();
-
-      if(currentAccount){
+  
+      if (currentAccount) {
         const userData = {
           id: currentAccount.$id,
           name: currentAccount.name,
@@ -61,22 +62,27 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           imageUrl: currentAccount.imageUrl,
           bio: currentAccount.bio
         };
-
+  
         setUser(userData);
         setIsAuthenticated(true);
-
+  
         localStorage.setItem('user', JSON.stringify(userData));
-
-        return true;
+  
+        return true; // Return true if user is authenticated
+      } else {
+        setIsAuthenticated(false);
+        localStorage.removeItem('user');
+  
+        return false; // Return false if user is not authenticated
       }
-      return false;
     } catch (error) {
       console.log(error);
-      return false;
+      return false; // Return false if there's an error
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   const logout = () => {
     localStorage.removeItem('user');
