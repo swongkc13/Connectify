@@ -57,7 +57,7 @@ const SigninForm = () => {
       // navigate to homepage
       navigate('/')
     } else {
-      return toast({ title: 'Sign up failed. Please try again.'})
+      return toast({ title: 'Login Failed. Please try again.'})
     }
 
   }
