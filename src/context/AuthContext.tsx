@@ -1,7 +1,8 @@
-import { getCurrentUser } from "@/lib/appwrite/api";
-import { IUser } from "@/types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { IUser } from "@/types";
+import { getCurrentUser } from "@/lib/appwrite/api";
 
 export const INITIAL_USER = {
   id: "",
@@ -40,19 +41,18 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const cookieFallback = localStorage.getItem('cookieFallback');
-    // || cookieFallback === null
-    if (cookieFallback === '[]') {
-      navigate('/sign-in');
+    const cookieFallback = localStorage.getItem("cookieFallback");
+    if (cookieFallback === "[]") {
+      navigate("/sign-in");
     } else {
-      checkAuthUser(); // Call checkAuthUser if cookieFallback is not empty or null
+      checkAuthUser();
     }
   }, []);
 
   const checkAuthUser = async (): Promise<boolean> => {
     try {
       const currentAccount = await getCurrentUser();
-  
+
       if (currentAccount) {
         const userData = {
           id: currentAccount.$id,
@@ -60,19 +60,19 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           username: currentAccount.username,
           email: currentAccount.email,
           imageUrl: currentAccount.imageUrl,
-          bio: currentAccount.bio
+          bio: currentAccount.bio,
         };
-  
+
         setUser(userData);
         setIsAuthenticated(true);
-  
-        localStorage.setItem('user', JSON.stringify(userData));
-  
+
+        localStorage.setItem("user", JSON.stringify(userData));
+
         return true; // Return true if user is authenticated
       } else {
         setIsAuthenticated(false);
-        localStorage.removeItem('user');
-  
+        localStorage.removeItem("user");
+
         return false; // Return false if user is not authenticated
       }
     } catch (error) {
@@ -82,14 +82,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsLoading(false);
     }
   };
-  
-
-  const logout = () => {
-    localStorage.removeItem('user');
-    setUser(INITIAL_USER);
-    setIsAuthenticated(false);
-    navigate('/sign-in');
-  };
 
   const value = {
     user,
@@ -98,7 +90,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isAuthenticated,
     setIsAuthenticated,
     checkAuthUser,
-    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
