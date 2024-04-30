@@ -123,7 +123,3 @@ const SigninForm = () => {
 };
 
 export default SigninForm;
-function toast(arg0: { title: string; }) {
-  throw new Error("Function not implemented.");
-}
-
