@@ -159,7 +159,3 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
-function toast(arg0: { title: string; }) {
-  throw new Error("Function not implemented.");
-}
-
