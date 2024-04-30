@@ -17,7 +17,6 @@ import { useForm } from "react-hook-form";
 import { SignupValidation } from "@/lib/validation";
 import { z } from "zod";
 import Loader from "@/components/shared/Loader";
-import { createUserAccount } from "@/lib/appwrite/api";
 import { useCreateUserAccount, useSignInAccount } from "@/lib/react-query/queriesAndMutations";
 import { useUserContext } from "@/context/AuthContext";
 

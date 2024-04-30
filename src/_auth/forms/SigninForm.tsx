@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { SigninValidation } from "@/lib/validation";
 import { z } from "zod";
 import Loader from "@/components/shared/Loader";
-import { createUserAccount } from "@/lib/appwrite/api";
 import { useSignInAccount } from "@/lib/react-query/queriesAndMutations";
 import { useUserContext } from "@/context/AuthContext";
 
